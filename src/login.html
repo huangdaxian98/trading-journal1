@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录 - 翻仓挑战系统</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            background-color: var(--bg-primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .login-container {
+            background-color: var(--bg-card);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            overflow: hidden;
+        }
+        
+        .login-header {
+            background-color: var(--bg-secondary);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .login-header .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .login-body {
+            padding: 30px;
+        }
+        
+        .tab-container {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 10px 15px;
+            cursor: pointer;
+            opacity: 0.7;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        
+        .tab:hover {
+            opacity: 1;
+        }
+        
+        .tab.active {
+            opacity: 1;
+            border-bottom-color: var(--primary-color);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+        }
+        
+        .input-with-icon {
+            position: relative;
+        }
+        
+        .input-with-icon input {
+            padding-left: 40px;
+        }
+        
+        .input-icon {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+        
+        .forgot-password {
+            text-align: right;
+            margin-bottom: 20px;
+        }
+        
+        .forgot-password a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-size: 0.85rem;
+        }
+        
+        .forgot-password a:hover {
+            text-decoration: underline;
+        }
+        
+        .error-message {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: var(--danger-color);
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .error-message.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i> 翻仓挑战系统
+            </div>
+            <p>登录您的账户开始交易之旅</p>
+        </div>
+        
+        <div class="login-body">
+            <div class="tab-container">
+                <div class="tab active" data-tab="login">登录</div>
+                <div class="tab" data-tab="register">注册</div>
+            </div>
+            
+            <div class="error-message" id="error-message"></div>
+            
+            <div class="tab-content" id="login-content">
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="login-email">邮箱</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-envelope input-icon"></i>
+                            <input type="email" id="login-email" placeholder="您的邮箱地址" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="login-password">密码</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-lock input-icon"></i>
+                            <input type="password" id="login-password" placeholder="您的密码" required>
+                        </div>
+                    </div>
+                    
+                    <div class="forgot-password">
+                        <a href="#" id="forgot-password">忘记密码?</a>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-block">
+                        <i class="fas fa-sign-in-alt"></i> 登录
+                    </button>
+                </form>
+            </div>
+            
+            <div class="tab-content hidden" id="register-content">
+                <form id="register-form">
+                    <div class="form-group">
+                        <label for="register-email">邮箱</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-envelope input-icon"></i>
+                            <input type="email" id="register-email" placeholder="您的邮箱地址" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="register-password">密码</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-lock input-icon"></i>
+                            <input type="password" id="register-password" placeholder="设置密码 (至少6位)" required minlength="6">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="register-confirm">确认密码</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-lock input-icon"></i>
+                            <input type="password" id="register-confirm" placeholder="再次输入密码" required minlength="6">
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-block">
+                        <i class="fas fa-user-plus"></i> 注册账户
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.18.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.18.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.18.0/firebase-firestore-compat.js"></script>
+    <script>
+        // 初始化Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBV_mrY9q6o95yAoMin4QymGMqMxWTKTUA",
+            authDomain: "trading-journal-b6ac4.firebaseapp.com",
+            projectId: "trading-journal-b6ac4",
+            storageBucket: "trading-journal-b6ac4.firebasestorage.app",
+            messagingSenderId: "697087405642",
+            appId: "1:697087405642:web:f61cdaf810424a35e700b3",
+            measurementId: "G-09TNMP4K42"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        
+        // DOM元素
+        const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('register-form');
+        const errorMessage = document.getElementById('error-message');
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+        const forgotPasswordLink = document.getElementById('forgot-password');
+        
+        // 检查用户是否已登录
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                window.location.href = 'index.html'; // 已登录则跳转到首页
+            }
+        });
+        
+        // 标签页切换
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabTarget = tab.getAttribute('data-tab');
+                
+                // 激活标签
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                // 显示对应内容
+                tabContents.forEach(content => {
+                    content.classList.add('hidden');
+                });
+                document.getElementById(`${tabTarget}-content`).classList.remove('hidden');
+                
+                // 清除错误信息
+                errorMessage.textContent = '';
+                errorMessage.classList.remove('active');
+            });
+        });
+        
+        // 登录表单提交
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            
+            try {
+                await auth.signInWithEmailAndPassword(email, password);
+                window.location.href = 'index.html';
+            } catch (error) {
+                showError(getErrorMessage(error.code));
+            }
+        });
+        
+        // 注册表单提交
+        registerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            const confirm = document.getElementById('register-confirm').value;
+            
+            // 检查密码匹配
+            if (password !== confirm) {
+                showError('两次输入的密码不匹配');
+                return;
+            }
+            
+            try {
+                // 创建用户
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                
+                // 创建用户配置
+                await db.collection('userConfig').doc(userCredential.user.uid).set({
+                    currentBalance: 100,
+                    startBalance: 100,
+                    targetBalance: 3000,
+                    dayCount: 1,
+                    currentPhase: 1,
+                    totalPhases: 5,
+                    created: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                window.location.href = 'index.html';
+            } catch (error) {
+                showError(getErrorMessage(error.code));
+            }
+        });
+        
+        // 忘记密码
+        forgotPasswordLink.addEventListener('click', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('login-email').value;
+            
+            if (!email) {
+                showError('请先输入您的邮箱地址');
+                return;
+            }
+            
+            try {
+                await auth.sendPasswordResetEmail(email);
+                showError('密码重置邮件已发送，请查收邮箱', 'success');
+            } catch (error) {
+                showError(getErrorMessage(error.code));
+            }
+        });
+        
+        // 显示错误信息
+        function showError(message, type = 'error') {
+            errorMessage.textContent = message;
+            errorMessage.classList.add('active');
+            
+            if (type === 'success') {
+                errorMessage.style.backgroundColor = 'rgba(16, 185, 129, 0.1)';
+                errorMessage.style.color = 'var(--success-color)';
+            } else {
+                errorMessage.style.backgroundColor = 'rgba(239, 68, 68, 0.1)';
+                errorMessage.style.color = 'var(--danger-color)';
+            }
+        }
+        
+        // 获取错误信息
+        function getErrorMessage(errorCode) {
+            switch(errorCode) {
+                case 'auth/invalid-email':
+                    return '邮箱格式不正确';
+                case 'auth/user-disabled':
+                    return '此用户已被禁用';
+                case 'auth/user-not-found':
+                    return '用户不存在';
+                case 'auth/wrong-password':
+                    return '密码错误';
+                case 'auth/email-already-in-use':
+                    return '此邮箱已被注册';
+                case 'auth/weak-password':
+                    return '密码强度太弱，请使用至少6位密码';
+                case 'auth/too-many-requests':
+                    return '登录尝试次数过多，请稍后再试';
+                default:
+                    return `发生错误: ${errorCode}`;
+            }
+        }
+    </script>
+</body>
+</html>

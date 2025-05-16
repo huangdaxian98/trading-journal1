@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>翻仓挑战系统</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div id="app">
+        <header>
+            <div class="logo">
+                <i class="fas fa-chart-line"></i> 翻仓挑战系统
+            </div>
+            <div class="user-info">
+                <span id="username">交易者小白</span>
+                <button id="logout" class="btn-small">退出</button>
+            </div>
+        </header>
+
+        <main class="dashboard">
+            <!-- 左侧面板 -->
+            <div class="left-panel">
+                <!-- 翻仓挑战主控台 -->
+                <div class="card challenge-panel">
+                    <div class="card-header">
+                        <h2><i class="fas fa-trophy"></i> 翻仓挑战主控台</h2>
+                        <span class="badge progress">进行中</span>
+                    </div>
+                    <div class="card-body">
+                        <form id="challenge-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="current-balance">当前资金 (USDT)</label>
+                                    <input type="number" id="current-balance" value="328" step="0.01" min="0">
+                                </div>
+                                <div class="form-group">
+                                    <label for="start-balance">起始资金 (USDT)</label>
+                                    <input type="number" id="start-balance" value="100" step="0.01" min="0">
+                                </div>
+                                <div class="form-group">
+                                    <label for="target-balance">目标资金 (USDT)</label>
+                                    <input type="number" id="target-balance" value="3000" step="0.01" min="0">
+                                </div>
+                            </div>
+                            
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 15%;"></div>
+                            </div>
+                            
+                            <div class="stats-grid">
+                                <div class="stat-box">
+                                    <div class="stat-value">
+                                        <input type="number" id="days-count" value="7" min="1" class="stat-input">
+                                        天 <i class="fas fa-clock"></i>
+                                    </div>
+                                    <div class="stat-label">挑战天数</div>
+                                </div>
+                                <div class="stat-box">
+                                    <div class="stat-value">
+                                        <input type="number" id="phase-count" value="2" min="1" class="stat-input"> /
+                                        <input type="number" id="total-phases" value="5" min="1" class="stat-input">
+                                        <i class="fas fa-layer-group"></i>
+                                    </div>
+                                    <div class="stat-label">当前阶段</div>
+                                </div>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-outline btn-block">
+                                <i class="fas fa-save"></i> 保存挑战设置
+                            </button>
+                        </form>
+                        
+                        <div class="alert alert-info">
+                            <i class="fas fa-bell"></i> <strong>八字时间提示:</strong> 今日为金水之日，适合短线交易，不宜重仓
+                        </div>
+                        
+                        <div class="next-goal">
+                            <div class="trophy-icon"><i class="fas fa-award"></i></div>
+                            <div class="goal-info">
+                                <div class="goal-title">下一目标: 500 USDT</div>
+                                <div class="goal-progress">再赚172 USDT即可达成，加油！</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 情绪对冲系统 -->
+                <div class="card emotion-panel">
+                    <div class="card-header">
+                        <h2><i class="fas fa-brain"></i> 情绪对冲系统</h2>
+                        <span class="badge feature">特色</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="tab-container">
+                            <div class="tab active" data-tab="emotion-card">
+                                <i class="fas fa-user"></i> 早间打卡
+                            </div>
+                            <div class="tab" data-tab="emotion-review">
+                                <i class="fas fa-sync-alt"></i> 晚间复盘
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content" id="emotion-card-content">
+                            <h3>今日心情</h3>
+                            <div class="emotion-selector">
+                                <div class="emotion-item" data-emotion="excited">
+                                    <div class="emotion-icon">😊</div>
+                                    <div class="emotion-label">积极</div>
+                                </div>
+                                <div class="emotion-item" data-emotion="neutral">
+                                    <div class="emotion-icon">😐</div>
+                                    <div class="emotion-label">平静</div>
+                                </div>
+                                <div class="emotion-item" data-emotion="low">
+                                    <div class="emotion-icon">😔</div>
+                                    <div class="emotion-label">低落</div>
+                                </div>
+                                <div class="emotion-item active" data-emotion="anxious">
+                                    <div class="emotion-icon">😠</div>
+                                    <div class="emotion-label">焦虑</div>
+                                </div>
+                                <div class="emotion-item" data-emotion="stressed">
+                                    <div class="emotion-icon">😵</div>
+                                    <div class="emotion-label">压力大</div>
+                                </div>
+                            </div>
+                            
+                            <h3>情绪质量</h3>
+                            <div class="mood-slider">
+                                <div class="mood-bad">😡</div>
+                                <input type="range" min="0" max="100" value="50" class="slider" id="mood-range">
+                                <div class="mood-good">😄</div>
+                            </div>
+                            
+                            <h3>今日情绪标签</h3>
+                            <div class="tag-container">
+                                <div class="tag"><i class="fas fa-fire"></i> 放松</div>
+                                <div class="tag active"><i class="fas fa-star"></i> 专注</div>
+                                <div class="tag"><i class="fas fa-smile"></i> 思考</div>
+                                <div class="tag active"><i class="fas fa-bolt"></i> 压力</div>
+                                <div class="tag active"><i class="fas fa-dragon"></i> 乐观</div>
+                                <div class="tag"><i class="fas fa-heart"></i> 担忧</div>
+                                <div class="tag"><i class="fas fa-sun"></i> 兴奋</div>
+                                <div class="tag active"><i class="fas fa-ghost"></i> 无感</div>
+                            </div>
+                            
+                            <h3>情绪状态描述</h3>
+                            <textarea class="emotion-notes" placeholder="记录你今天的心情状态...">今天睡眠一般，但状态还算稳定，市场波动较大，需要保持专注，避免FOMO心态。</textarea>
+                            
+                            <button class="btn btn-primary btn-block" id="save-emotion-card">
+                                <i class="fas fa-save"></i> 提交打卡
+                            </button>
+                        </div>
+                        
+                        <div class="tab-content hidden" id="emotion-review-content">
+                            <h3>晚间心情</h3>
+                            <div class="emotion-selector">
+                                <div class="emotion-item" data-emotion="excited">
+                                    <div class="emotion-icon">😊</div>
+                                    <div class="emotion-label">积极</div>
+                                </div>
+                                <div class="emotion-item" data-emotion="neutral">
+                                    <div class="emotion-icon">😐</div>
+                                    <div class="emotion-label">平静</div>
+                                </div>
+                                <div class="emotion-item" data-emotion="low">
+                                    <div class="emotion-icon">😔</div>
+                                    <div class="emotion-label">低落</div>
+                                </div>
+                                <div class="emotion-item" data-emotion="anxious">
+                                    <div class="emotion-icon">😠</div>
+                                    <div class="emotion-label">焦虑</div>
+                                </div>
+                                <div class="emotion-item" data-emotion="stressed">
+                                    <div class="emotion-icon">😵</div>
+                                    <div class="emotion-label">压力大</div>
+                                </div>
+                            </div>
+                            
+                            <h3>晚间情绪质量</h3>
+                            <div class="mood-slider">
+                                <div class="mood-bad">😡</div>
+                                <input type="range" min="0" max="100" value="65" class="slider" id="evening-mood-range">
+                                <div class="mood-good">😄</div>
+                            </div>
+                            
+                            <h3>晚间情绪标签</h3>
+                            <div class="tag-container">
+                                <div class="tag"><i class="fas fa-fire"></i> 放松</div>
+                                <div class="tag"><i class="fas fa-star"></i> 专注</div>
+                                <div class="tag active"><i class="fas fa-smile"></i> 思考</div>
+                                <div class="tag"><i class="fas fa-bolt"></i> 压力</div>
+                                <div class="tag active"><i class="fas fa-dragon"></i> 乐观</div>
+                                <div class="tag"><i class="fas fa-heart"></i> 担忧</div>
+                                <div class="tag"><i class="fas fa-sun"></i> 兴奋</div>
+                                <div class="tag"><i class="fas fa-ghost"></i> 无感</div>
+                            </div>
+                            
+                            <h3>今日交易复盘</h3>
+                            <textarea class="emotion-notes" placeholder="复盘今天的交易决策和情绪控制...">今天操作较为谨慎，市场波动中能够保持冷静，避免了追高的冲动。明天需要继续关注ETH的走势。</textarea>
+                            
+                            <h3>交易教训</h3>
+                            <textarea class="emotion-notes" placeholder="记录今天交易中的教训和收获...">教训：不要在横盘区间过度交易，耐心等待趋势形成再入场。</textarea>
+                            
+                            <button class="btn btn-primary btn-block" id="save-emotion-review">
+                                <i class="fas fa-save"></i> 提交复盘
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 心理纪律雷达 -->
+                <div class="card discipline-panel">
+                    <div class="card-header">
+                        <h2><i class="fas fa-heartbeat"></i> 心理纪律雷达</h2>
+                        <span class="badge">😊</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-triangle"></i> <strong>警告!</strong> 您已连续亏损2单，建议冷静观察市场
+                        </div>
+                        
+                        <div class="discipline-chart">
+                            <div class="chart-placeholder">[此处将显示心理纪律雷达图]</div>
+                        </div>
+                        
+                        <div class="discipline-reminder">
+                            <div class="reminder-item warning">
+                                <div class="reminder-icon">😲</div>
+                                <div class="reminder-text">纪律提醒: 你今天已超过2单，是否是情绪在主导?</div>
+                            </div>
+                            
+                            <div class="reminder-item">
+                                <div class="reminder-icon">🚫</div>
+                                <div class="reminder-text">风险控制: 单笔亏损不能超过5%，请遵守风控规则</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 右侧面板 -->
+            <div class="right-panel">
+                <!-- 每日交易计划 -->
+                <div class="card trading-plan">
+                    <div class="card-header">
+                        <h2><i class="fas fa-calendar-check"></i> 每日交易计划</h2>
+                        <span class="badge"><i class="fas fa-chart-bar"></i></span>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label>币种</label>
+                            <div class="input-with-icon">
+                                <input type="text" id="symbol" value="BTC" placeholder="输入交易币种">
+                                <button class="icon-btn"><i class="fas fa-sync-alt"></i></button>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>交易方向</label>
+                            <div class="direction-buttons">
+                                <button class="direction-btn long active" id="direction-long">
+                                    <i class="fas fa-long-arrow-alt-up"></i> 做多
+                                </button>
+                                <button class="direction-btn short" id="direction-short">
+                                    <i class="fas fa-long-arrow-alt-down"></i> 做空
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>进场位 <i class="fas fa-arrow-right"></i></label>
+                                <input type="number" id="entry-price" value="27650" placeholder="进场价格">
+                            </div>
+                            <div class="form-group">
+                                <label>止损位 <i class="fas fa-times"></i></label>
+                                <input type="number" id="stop-loss" value="28100" placeholder="止损价格">
+                            </div>
+                            <div class="form-group">
+                                <label>止盈位 <i class="fas fa-check"></i></label>
+                                <input type="number" id="take-profit" value="26800" placeholder="止盈价格">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>当日最大亏损额度 (USDT) <i class="fas fa-lock"></i></label>
+                            <input type="number" id="max-loss" value="30" placeholder="最大亏损额度">
+                        </div>
+                        
+                        <div class="alert alert-success">
+                            <i class="fas fa-check-circle"></i> <strong>系统提醒:</strong> 您的计划风险比为1:2.5，符合风控要求
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>交易理由 <i class="fas fa-edit"></i></label>
+                            <textarea id="trade-reason" placeholder="记录交易理由和策略...">BTC 4小时下降趋势确立，日线MA10下穿MA30，盘加波动剧烈，计划在27650做空，止损设在顶部上方。</textarea>
+                        </div>
+                        
+                        <div class="action-buttons">
+                            <button class="btn btn-outline" id="btn-technical"><i class="fas fa-chart-line"></i> 技术分析</button>
+                            <button class="btn btn-outline" id="btn-info"><i class="fas fa-info-circle"></i> 消息面</button>
+                            <button class="btn btn-outline" id="btn-history"><i class="fas fa-history"></i> 跟踪交易</button>
+                            <button class="btn btn-outline" id="btn-advice"><i class="fas fa-lightbulb"></i> 知识</button>
+                        </div>
+                        
+                        <button class="btn btn-primary btn-block" id="save-plan">
+                            <i class="fas fa-save"></i> 保存交易计划
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 翻仓日志系统 -->
+                <div class="card trade-log">
+                    <div class="card-header">
+                        <h2><i class="fas fa-book"></i> 翻仓日志系统</h2>
+                        <span class="badge hot"><i class="fas fa-fire"></i></span>
+                    </div>
+                    <div class="card-body">
+                        <div class="trades-table-container">
+                            <table class="trades-table">
+                                <thead>
+                                    <tr>
+                                        <th>时间</th>
+                                        <th>币种</th>
+                                        <th>方向</th>
+                                        <th>盈亏</th>
+                                        <th>心情</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="profit-row">
+                                        <td>05-12 10:30</td>
+                                        <td>BTC</td>
+                                        <td class="direction short">空 <i class="fas fa-arrow-down"></i></td>
+                                        <td class="profit">+42 USDT</td>
+                                        <td class="emotion">😊</td>
+                                        <td class="actions">
+                                            <button class="icon-btn"><i class="fas fa-eye"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr class="loss-row">
+                                        <td>05-11 15:45</td>
+                                        <td>ETH</td>
+                                        <td class="direction long">多 <i class="fas fa-arrow-up"></i></td>
+                                        <td class="loss">-18 USDT</td>
+                                        <td class="emotion">😊</td>
+                                        <td class="actions">
+                                            <button class="icon-btn"><i class="fas fa-eye"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr class="loss-row">
+                                        <td>05-11 09:20</td>
+                                        <td>SOL</td>
+                                        <td class="direction short">空 <i class="fas fa-arrow-down"></i></td>
+                                        <td class="loss">-15 USDT</td>
+                                        <td class="emotion">😔</td>
+                                        <td class="actions">
+                                            <button class="icon-btn"><i class="fas fa-eye"></i></button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="analysis-section">
+                            <h3><i class="fas fa-chart-pie"></i> 盈亏分析</h3>
+                            <div class="chart-placeholder">[此处将显示盈亏曲线图]</div>
+                        </div>
+                        
+                        <div class="stats-grid stats-summary">
+                            <div class="stat-box">
+                                <div class="stat-value">42% <i class="fas fa-bullseye"></i></div>
+                                <div class="stat-label">胜率</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-value">1.5 <i class="fas fa-balance-scale"></i></div>
+                                <div class="stat-label">盈亏比</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-value">+9 <i class="fas fa-chart-line"></i></div>
+                                <div class="stat-label">今日收益</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-value">3 <i class="fas fa-exchange-alt"></i></div>
+                                <div class="stat-label">交易次数</div>
+                            </div>
+                        </div>
+                        
+                        <div class="action-buttons spaced">
+                            <button class="btn btn-outline" id="export-log">
+                                <i class="fas fa-file-export"></i> 导出日志
+                            </button>
+                            <button class="btn btn-primary" id="add-trade">
+                                <i class="fas fa-plus"></i> 记录新交易
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- 新交易记录模态框 -->
+    <div class="modal" id="trade-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-plus-circle"></i> 记录新交易</h2>
+                <button class="close-btn" id="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>币种</label>
+                        <input type="text" id="modal-symbol" placeholder="BTC, ETH...">
+                    </div>
+                    <div class="form-group">
+                        <label>日期时间</label>
+                        <input type="datetime-local" id="modal-date">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>交易方向</label>
+                    <div class="direction-buttons">
+                        <button class="direction-btn long active" id="modal-long">
+                            <i class="fas fa-long-arrow-alt-up"></i> 做多
+                        </button>
+                        <button class="direction-btn short" id="modal-short">
+                            <i class="fas fa-long-arrow-alt-down"></i> 做空
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>进场价</label>
+                        <input type="number" id="modal-entry" placeholder="进场价格">
+                    </div>
+                    <div class="form-group">
+                        <label>出场价</label>
+                        <input type="number" id="modal-exit" placeholder="出场价格">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>止损价</label>
+                        <input type="number" id="modal-sl" placeholder="止损价格">
+                    </div>
+                    <div class="form-group">
+                        <label>止盈价</label>
+                        <input type="number" id="modal-tp" placeholder="止盈价格">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>盈亏金额 (USDT)</label>
+                    <input type="number" id="modal-pnl" placeholder="正数为盈利，负数为亏损">
+                </div>
+                
+                <div class="form-group">
+                    <label>交易情绪</label>
+                    <div class="emotion-selector small">
+                        <div class="emotion-item" data-emotion="excited">
+                            <div class="emotion-icon">😊</div>
+                        </div>
+                        <div class="emotion-item" data-emotion="neutral">
+                            <div class="emotion-icon">😐</div>
+                        </div>
+                        <div class="emotion-item" data-emotion="low">
+                            <div class="emotion-icon">😔</div>
+                        </div>
+                        <div class="emotion-item" data-emotion="anxious">
+                            <div class="emotion-icon">😠</div>
+                        </div>
+                        <div class="emotion-item" data-emotion="stressed">
+                            <div class="emotion-icon">😵</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>交易笔记</label>
+                    <textarea id="modal-notes" placeholder="记录交易想法、执行情况和复盘..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" id="cancel-trade">取消</button>
+                <button class="btn btn-primary" id="save-trade">保存交易</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.18.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.18.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.18.0/firebase-firestore-compat.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
